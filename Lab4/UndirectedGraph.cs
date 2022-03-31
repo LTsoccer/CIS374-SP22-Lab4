@@ -190,7 +190,7 @@ namespace Lab4
 			//    color[v] = white
 			//    
 			// dfsVisit(startingNode)
-			
+			DFSVisit(startingNode, predecessorDictionary);
 
 			return predecessorDictionary;
 		}
@@ -198,6 +198,16 @@ namespace Lab4
 		// TODO
 		private void DFSVisit(Node node, Dictionary<Node, Node> pred)
 		{
+			node.Color = Color.Gray;
+			foreach (Node v in node.Neighbors)
+            {
+				if (node.Color == Color.White)
+                {
+					pred[v] = node;
+					DFSVisit(v, pred);
+				}
+            }
+			node.Color = Color.Black;
 			// color[node] = gray
 			// foreach neighbor v of node
 			//    if color[v] = white then
@@ -227,9 +237,12 @@ namespace Lab4
 
 			// startingNode.color = gray
 			// dist[startingNode] = 0
+			startingNode.Color = Color.Gray;
+			predecessorDictionary[startingNode] = (null, 0);
 
 			// queue = empty Queue
 			// queuue.enqueue(startingNode)
+			queue.Enqueue(startingNode);
 
 			// while( queue is not empty ) do
 			//   u = head(Q)
@@ -241,6 +254,23 @@ namespace Lab4
 			//        enqueue(v)
 			//   queue.dequeue()
 			//   color[u] = black
+
+			while (queue.Count == 0)
+            {
+				Node u = queue.Peek();
+				foreach(Node v in u.Neighbors)
+                {
+					if (v.Color == Color.White)
+                    {
+						(Node y, int pre) = predecessorDictionary[u];
+						predecessorDictionary[v] = (u, pre);
+						v.Color = Color.Gray;
+						queue.Enqueue(v);
+                    }
+                }
+				queue.Dequeue();
+				u.Color = Color.Black;
+            }
 
 			
 			return predecessorDictionary;
