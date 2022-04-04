@@ -339,9 +339,39 @@ namespace Lab4
 			return str;
         }
 
+		public string ReadBFSDict(Dictionary<Node, (Node pred, int dist)> Nodes)
+		{
+			string str = "";
+			foreach ((Node key, (Node value, int dist)) in Nodes)
+			{
+				if (key == null)
+				{
+					str += "none";
+				}
+				else
+				{
+					str += key.Name;
+				}
+				str += ": ";
+				if (value == null)
+				{
+					str += "none";
+				}
+				else
+				{
+					str += value.Name;
+					str += ", ";
+					str += dist;
+				}
+				str += Environment.NewLine;
+			}
+
+			return str;
+		}
 
 
-        public override string ToString()
+
+		public override string ToString()
         {
 			string str="";
 
