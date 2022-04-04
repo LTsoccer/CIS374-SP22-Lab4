@@ -163,12 +163,24 @@ namespace Lab4
 			{
 				int connectedComponents = 0;
 
+				foreach (Node node in Nodes)
+                {
+					if (node.Color == Color.White)
+					{
+						connectedComponents++;
+						foreach (Node x in node.Neighbors)
+							if (x.Color == Color.White)
+							{
+								x.Color = Color.Gray;
+							}
+						node.Color = Color.Black;
+					}
+				}
+
 				// for all the nodes
 				//     if node is white
 				//        connectedComponents++
 				//        explore the neighbors
-				//        
-
 
 
 				return connectedComponents;
@@ -188,9 +200,18 @@ namespace Lab4
 			// foreach v in V do
 			//    pred[v] = -1
 			//    color[v] = white
+
+			foreach (Node v in Nodes)
+            {
+				predecessorDictionary[v] = null;
+				v.Color = Color.White;
+			}
+			foreach (Node u in Nodes)
+            {
+				DFSVisit(u, predecessorDictionary);
+			}
 			//    
 			// dfsVisit(startingNode)
-			DFSVisit(startingNode, predecessorDictionary);
 
 			return predecessorDictionary;
 		}
@@ -201,7 +222,7 @@ namespace Lab4
 			node.Color = Color.Gray;
 			foreach (Node v in node.Neighbors)
             {
-				if (node.Color == Color.White)
+				if (v.Color == Color.White)
                 {
 					pred[v] = node;
 					DFSVisit(v, pred);
@@ -234,6 +255,11 @@ namespace Lab4
 			//    pred[v] = -1
 			//    dist[v] = infinity
 			//    color[v] = white
+			foreach (Node node in Nodes)
+            {
+				predecessorDictionary[node] = (null, 0);
+				node.Color = Color.White;
+            }
 
 			// startingNode.color = gray
 			// dist[startingNode] = 0
@@ -255,7 +281,7 @@ namespace Lab4
 			//   queue.dequeue()
 			//   color[u] = black
 
-			while (queue.Count == 0)
+			while (queue.Count != 0)
             {
 				Node u = queue.Peek();
 				foreach(Node v in u.Neighbors)
@@ -286,6 +312,33 @@ namespace Lab4
 
 		}
 
+		public string ReadDFSDict(Dictionary<Node, Node> Nodes)
+        {
+			string str = "";
+			foreach ((Node key, Node value) in Nodes) {
+				if (key == null)
+                {
+					str += "none";
+				}
+				else
+                {
+					str += key.Name;
+				}
+				str += ": ";
+				if (value == null)
+				{
+					str += "none";
+				}
+				else
+				{
+					str += value.Name;
+				}
+				str += Environment.NewLine;
+			}
+
+			return str;
+        }
+
 
 
         public override string ToString()
@@ -296,14 +349,21 @@ namespace Lab4
 			foreach( Node node in Nodes)
             {
 				str += node.Name;
-				str += " has neighbors: ";
-
-				foreach( Node neighbor in node.Neighbors)
+				if (node.Neighbors.Count == 0)
                 {
-					str += neighbor.Name;
-					str += ", ";
-                }
+					str += " has no neighbors";
+				}
+				else
+                {
+					str += " has neighbors: ";
 
+					foreach (Node neighbor in node.Neighbors)
+					{
+						str += neighbor.Name;
+						str += ", ";
+					}
+					str = str.Remove(str.Length - 2);
+				}
 				str += ".";
 				str += Environment.NewLine;
 
