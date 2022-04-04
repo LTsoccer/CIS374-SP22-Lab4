@@ -157,24 +157,37 @@ namespace Lab4
 		/**
          * <summary> Returns the number of connecxted components in the graph .</summary>
          */
+		private void FindNeighbors(Node node)
+        {
+			foreach (Node x in node.Neighbors)
+			{
+				if (x.Color == Color.White)
+				{
+					x.Color = Color.Gray;
+					if (x.Neighbors.Count > 0)
+                    {
+						FindNeighbors(x);
+                    }
+				}
+			}
+		}
 		public int ConnectedComponents
 		{
 			get
 			{
 				int connectedComponents = 0;
-
+				foreach (Node x in Nodes)
+                {
+					x.Color = Color.White;
+                }
 				foreach (Node node in Nodes)
                 {
 					if (node.Color == Color.White)
 					{
 						connectedComponents++;
-						foreach (Node x in node.Neighbors)
-							if (x.Color == Color.White)
-							{
-								x.Color = Color.Gray;
-							}
-						node.Color = Color.Black;
+						FindNeighbors(node);
 					}
+					node.Color = Color.Black;
 				}
 
 				// for all the nodes
